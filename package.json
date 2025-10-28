@@ -1,0 +1,36 @@
+{
+  "name": "zodiac-color-search-app",
+  "version": "1.0.0",
+  "description": "生肖波色高级搜索系统 - 混合应用",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npm run build && npm run android:sync && npx cap run android",
+    "android:build": "npm run build && npm run android:sync && cd android && ./gradlew assembleDebug"
+  },
+  "keywords": [
+    "capacitor",
+    "android",
+    "html",
+    "webapp",
+    "zodiac",
+    "search"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0"
+  }
+}

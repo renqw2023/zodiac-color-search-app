@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#667eea">
+    <title>生肖波色高级搜索系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            animation: backgroundShift 10s ease-in-out infinite alternate;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @keyframes backgroundShift {
+            0% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            100% { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .search-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { 
+                opacity: 0; 
+                transform: translateX(-50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        .help-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { 
+                opacity: 0; 
+                transform: translateX(50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        .main-title {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 15px;
+            font-size: 16px;
+            border: 2px solid #e0e7ff;
+            border-radius: 15px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+        }
+
+        .result-section {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            animation: fadeInUp 0.6s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .result-section:nth-child(2) { animation-delay: 0.1s; }
+        .result-section:nth-child(3) { animation-delay: 0.2s; }
+
+        .result-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .icon-found { background: #10b981; }
+        .icon-filtered { background: #f59e0b; }
+        .icon-error { background: #ef4444; }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .number-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .number-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .number-item:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .number-item:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+        }
+
+        .filtered .number-item {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .filtered .number-item:hover {
+            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.5);
+        }
+
+        .help-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .help-section {
+            margin-bottom: 20px;
+        }
+
+        .help-section h4 {
+            color: #374151;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .help-section p, .help-section li {
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .help-section ul {
+            padding-left: 20px;
+        }
+
+        .zodiac-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .zodiac-item {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            padding: 6px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: #3730a3;
+            font-size: 0.8em;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .example-box strong {
+            color: #92400e;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 统计信息 */
+        .stats-section {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #10b981;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #6b7280;
+            margin-top: 3px;
+        }
+
+        /* 移动端优化 */
+        @media (min-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr 300px;
+                gap: 30px;
+            }
+            
+            .search-container, .help-container {
+                padding: 30px;
+            }
+            
+            .main-title {
+                font-size: 2.5em;
+            }
+            
+            .subtitle {
+                font-size: 1.1em;
+                margin-bottom: 30px;
+            }
+            
+            .button-group {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+            }
+            
+            .number-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+            
+            .zodiac-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+            }
+        }
+
+        /* 高分辨率屏幕优化 */
+        @media (min-width: 1024px) {
+            .help-section p, .help-section li {
+                font-size: 1.1em;
+            }
+            
+            .zodiac-item {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="search-container">
+            <h1 class="main-title">生肖波色高级搜索系统</h1>
+            <p class="subtitle">智能检索生肖与波色组合，精确定位目标数字</p>
+            
+            <div class="input-section">
+                <label class="input-label" for="searchInput">输入检索条件：</label>
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="search-input" 
+                           placeholder="例如：兔猪龙牛猴狗羊 红 蓝"
+                           value="兔猪龙牛猴狗羊 红 蓝">
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="performSearch()">
+                        🔍 开始检索
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        🗑️ 清空结果
+                    </button>
+                    <button class="btn btn-info" onclick="showFiltered()">
+                        📊 显示筛选数据
+                    </button>
+                </div>
+            </div>
+            
+            <div id="results"></div>
+        </div>
+
+        <div class="help-container">
+            <div class="help-title">
+                📚 使用说明
+            </div>
+            
+            <div class="help-section">
+                <h4>🎯 功能介绍</h4>
+                <p>本系统支持生肖和波色的智能检索，可以快速找到符合条件的数字组合。</p>
+            </div>
+
+            <div class="help-section">
+                <h4>📝 输入格式</h4>
+                <ul>
+                    <li><strong>生肖：</strong>鼠牛虎兔龙蛇马羊猴鸡狗猪</li>
+                    <li><strong>波色：</strong>红波、蓝波、绿波、红、蓝、绿</li>
+                    <li><strong>分隔：</strong>使用空格分隔多个条件</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h4>⚡ 检索逻辑</h4>
+                <ul>
+                    <li>同时有生肖和波色：求交集</li>
+                    <li>只有生肖：显示生肖对应数字</li>
+                    <li>只有波色：显示波色对应数字</li>
+                </ul>
+            </div>
+
+            <div class="help-section">
+                <h4>💡 使用示例</h4>
+                <div class="example-box">
+                    <strong>示例1：</strong>兔猪龙牛猴狗羊 红 蓝<br>
+                    <small>查找属兔猪龙牛猴狗羊且为红波或蓝波的数字</small>
+                </div>
+                <div class="example-box">
+                    <strong>示例2：</strong>红 绿<br>
+                    <small>查找所有红波和绿波的数字</small>
+                </div>
+                <div class="example-box">
+                    <strong>示例3：</strong>鼠牛虎<br>
+                    <small>查找属鼠牛虎的所有数字</small>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h4>🐭 生肖对应数字</h4>
+                <div class="zodiac-grid">
+                    <div class="zodiac-item">鼠: 6,18,30,42</div>
+                    <div class="zodiac-item">牛: 5,17,29,41</div>
+                    <div class="zodiac-item">虎: 4,16,28,40</div>
+                    <div class="zodiac-item">兔: 3,15,27,39</div>
+                    <div class="zodiac-item">龙: 2,14,26,38</div>
+                    <div class="zodiac-item">蛇: 1,13,25,37,49</div>
+                    <div class="zodiac-item">马: 12,24,36,48</div>
+                    <div class="zodiac-item">羊: 11,23,35,47</div>
+                    <div class="zodiac-item">猴: 10,22,34,46</div>
+                    <div class="zodiac-item">鸡: 9,21,33,45</div>
+                    <div class="zodiac-item">狗: 8,20,32,44</div>
+                    <div class="zodiac-item">猪: 7,19,31,43</div>
+                </div>
+            </div>
+
+            <div class="help-section">
+                <h4>🌈 波色对应数字</h4>
+                <ul>
+                    <li><strong>红波：</strong>18,30,29,40,2,1,13,12,24,23,35,34,46,45,8,7,19</li>
+                    <li><strong>蓝波：</strong>42,41,4,3,15,14,26,25,37,36,48,47,10,9,20,31</li>
+                    <li><strong>绿波：</strong>6,5,17,16,28,27,39,38,49,11,22,21,33,32,44,43</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 生肖数字映射
+        const zodiacNumbers = {
+            '鼠': [6, 18, 30, 42],
+            '牛': [5, 17, 29, 41],
+            '虎': [4, 16, 28, 40],
+            '兔': [3, 15, 27, 39],
+            '龙': [2, 14, 26, 38],
+            '蛇': [1, 13, 25, 37, 49],
+            '马': [12, 24, 36, 48],
+            '羊': [11, 23, 35, 47],
+            '猴': [10, 22, 34, 46],
+            '鸡': [9, 21, 33, 45],
+            '狗': [8, 20, 32, 44],
+            '猪': [7, 19, 31, 43]
+        };
+
+        // 波色数字映射
+        const waveColors = {
+            '红波': [18, 30, 29, 40, 2, 1, 13, 12, 24, 23, 35, 34, 46, 45, 8, 7, 19],
+            '蓝波': [42, 41, 4, 3, 15, 14, 26, 25, 37, 36, 48, 47, 10, 9, 20, 31],
+            '绿波': [6, 5, 17, 16, 28, 27, 39, 38, 49, 11, 22, 21, 33, 32, 44, 43],
+            '红': [18, 30, 29, 40, 2, 1, 13, 12, 24, 23, 35, 34, 46, 45, 8, 7, 19],
+            '蓝': [42, 41, 4, 3, 15, 14, 26, 25, 37, 36, 48, 47, 10, 9, 20, 31],
+            '绿': [6, 5, 17, 16, 28, 27, 39, 38, 49, 11, 22, 21, 33, 32, 44, 43]
+        };
+
+        let searchResults = {
+            input: '',
+            foundZodiacs: [],
+            foundWaves: [],
+            zodiacNumbers: [],
+            waveNumbers: [],
+            finalResult: [],
+            filteredOut: []
+        };
+
+        // 添加加载动画效果
+        function showLoading(element) {
+            element.innerHTML = '<div class="loading"></div>正在检索中...';
+        }
+
+        // 数字点击动画效果
+        function animateNumbers() {
+            const numberItems = document.querySelectorAll('.number-item');
+            numberItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animation = 'fadeInUp 0.5s ease-out forwards';
+                }, index * 50);
+            });
+        }
+
+        function performSearch() {
+            const input = document.getElementById('searchInput').value.trim();
+            const resultsDiv = document.getElementById('results');
+            
+            if (input === '') {
+                alert('请输入检索条件');
+                return;
+            }
+
+            if (input.includes('显示被筛选掉的数据')) {
+                showFiltered();
+                return;
+            }
+
+            // 显示加载状态
+            showLoading(resultsDiv);
+
+            // 模拟加载延迟以展示动画效果
+            setTimeout(() => {
+                // 重置结果
+                searchResults = {
+                    input: input,
+                    foundZodiacs: [],
+                    foundWaves: [],
+                    zodiacNumbers: [],
+                    waveNumbers: [],
+                    finalResult: [],
+                    filteredOut: []
+                };
+
+                // 识别生肖（逐字符检查）
+                const allZodiacs = Object.keys(zodiacNumbers);
+                for (let char of input) {
+                    if (zodiacNumbers[char]) {
+                        searchResults.foundZodiacs.push(char);
+                    }
+                }
+
+                // 识别波色（字符串匹配）
+                const allWaves = Object.keys(waveColors);
+                for (let waveKey of allWaves) {
+                    if (input.includes(waveKey)) {
+                        searchResults.foundWaves.push(waveKey);
+                    }
+                }
+
+                // 获取生肖数字
+                for (let zodiac of searchResults.foundZodiacs) {
+                    searchResults.zodiacNumbers.push(...zodiacNumbers[zodiac]);
+                }
+                searchResults.zodiacNumbers = [...new Set(searchResults.zodiacNumbers)].sort((a, b) => a - b);
+
+                // 获取波色数字
+                for (let wave of searchResults.foundWaves) {
+                    searchResults.waveNumbers.push(...waveColors[wave]);
+                }
+                searchResults.waveNumbers = [...new Set(searchResults.waveNumbers)].sort((a, b) => a - b);
+
+                // 计算结果
+                if (searchResults.foundZodiacs.length > 0 && searchResults.foundWaves.length > 0) {
+                    // 既有生肖又有波色 - 求交集
+                    searchResults.finalResult = searchResults.zodiacNumbers.filter(num => 
+                        searchResults.waveNumbers.includes(num)
+                    );
+                    searchResults.filteredOut = searchResults.zodiacNumbers.filter(num => 
+                        !searchResults.finalResult.includes(num)
+                    );
+                } else if (searchResults.foundZodiacs.length > 0) {
+                    // 只有生肖
+                    searchResults.finalResult = searchResults.zodiacNumbers;
+                    searchResults.filteredOut = [];
+                } else if (searchResults.foundWaves.length > 0) {
+                    // 只有波色
+                    searchResults.finalResult = searchResults.waveNumbers;
+                    const allNums = Array.from({length: 49}, (_, i) => i + 1);
+                    searchResults.filteredOut = allNums.filter(num => 
+                        !searchResults.finalResult.includes(num)
+                    );
+                }
+
+                // 显示结果
+                displayResults();
+            }, 800);
+        }
+
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            let html = '';
+
+            // 显示统计信息
+            if (searchResults.finalResult.length > 0 || searchResults.filteredOut.length > 0) {
+                html += `<div class="stats-section">`;
+                html += `<div class="result-title">📊 检索统计</div>`;
+                html += `<div class="stats-grid">`;
+                html += `<div class="stat-item">`;
+                html += `<div class="stat-number">${searchResults.foundZodiacs.length}</div>`;
+                html += `<div class="stat-label">找到生肖</div>`;
+                html += `</div>`;
+                html += `<div class="stat-item">`;
+                html += `<div class="stat-number">${searchResults.foundWaves.length}</div>`;
+                html += `<div class="stat-label">找到波色</div>`;
+                html += `</div>`;
+                html += `<div class="stat-item">`;
+                html += `<div class="stat-number">${searchResults.finalResult.length}</div>`;
+                html += `<div class="stat-label">匹配结果</div>`;
+                html += `</div>`;
+                html += `<div class="stat-item">`;
+                html += `<div class="stat-number">${searchResults.filteredOut.length}</div>`;
+                html += `<div class="stat-label">被筛选</div>`;
+                html += `</div>`;
+                html += `</div></div>`;
+            }
+
+            // 显示检索结果
+            if (searchResults.finalResult.length > 0) {
+                html += `<div class="result-section">`;
+                html += `<div class="result-title">`;
+                html += `<div class="result-icon icon-found">✓</div>`;
+                html += `检索结果：${searchResults.input}`;
+                html += `</div>`;
+                html += `<div class="number-grid">`;
+                searchResults.finalResult.forEach(num => {
+                    html += `<div class="number-item" onclick="highlightNumber(${num})">${num}</div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            // 显示被筛选的数据
+            if (searchResults.filteredOut.length > 0) {
+                html += `<div class="result-section filtered">`;
+                html += `<div class="result-title">`;
+                html += `<div class="result-icon icon-filtered">⚠</div>`;
+                html += `被筛选掉的数据：`; 
+                html += `</div>`;
+                html += `<div class="number-grid">`;
+                searchResults.filteredOut.forEach(num => {
+                    html += `<div class="number-item" onclick="highlightNumber(${num})">${num}</div>`;
+                });
+                html += `</div></div>`;
+            }
+
+            // 如果没有结果
+            if (searchResults.finalResult.length === 0 && searchResults.foundZodiacs.length === 0 && searchResults.foundWaves.length === 0) {
+                html += `<div class="result-section">`;
+                html += `<div class="result-title">`;
+                html += `<div class="result-icon icon-error">✗</div>`;
+                html += `未找到匹配的检索条件`;
+                html += `</div>`;
+                html += `</div>`;
+            }
+
+            resultsDiv.innerHTML = html;
+            
+            // 触发动画效果
+            setTimeout(() => {
+                animateNumbers();
+            }, 100);
+        }
+
+        function highlightNumber(num) {
+            // 创建脉冲动画效果
+            const element = event.target;
+            element.style.animation = 'pulse 0.6s ease-in-out';
+            setTimeout(() => {
+                element.style.animation = '';
+            }, 600);
+        }
+
+        function showFiltered() {
+            if (searchResults.filteredOut.length === 0) {
+                alert('没有可显示的被筛选数据，请先进行检索');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            let html = `<div class="result-section filtered">`;
+            html += `<div class="result-title">`;
+            html += `<div class="result-icon icon-filtered">⚠</div>`;
+            html += `被筛选掉的数据：`;
+            html += `</div>`;
+            html += `<div class="number-grid">`;
+            searchResults.filteredOut.forEach(num => {
+                html += `<div class="number-item" onclick="highlightNumber(${num})">${num}</div>`;
+            });
+            html += `</div></div>`;
+            
+            resultsDiv.innerHTML = html;
+            animateNumbers();
+        }
+
+        function clearAll() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('results').innerHTML = '';
+            searchResults = {
+                input: '',
+                foundZodiacs: [],
+                foundWaves: [],
+                zodiacNumbers: [],
+                waveNumbers: [],
+                finalResult: [],
+                filteredOut: []
+            };
+            
+            // 添加清除动画
+            const searchContainer = document.querySelector('.search-container');
+            searchContainer.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                searchContainer.style.animation = 'slideInLeft 0.8s ease-out';
+            }, 300);
+        }
+
+        // 添加数字脉冲动画CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 页面加载时自动执行并添加欢迎动画
+        window.onload = function() {
+            setTimeout(() => {
+                performSearch();
+            }, 500);
+            
+            // 添加欢迎提示
+            setTimeout(() => {
+                if (confirm('🎉 欢迎使用生肖波色高级搜索系统！\\n\\n是否需要查看使用说明？')) {
+                    document.querySelector('.help-container').scrollIntoView({ 
+                        behavior: 'smooth' 
+                    });
+                }
+            }, 2000);
+        };
+
+        // 添加键盘快捷键支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            } else if (e.key === 'Escape') {
+                clearAll();
+            }
+        });
+
+        // 添加输入框实时提示
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const value = this.value;
+            let suggestions = [];
+            
+            // 简单的智能提示
+            if (value.includes('红')) suggestions.push('红波');
+            if (value.includes('蓝')) suggestions.push('蓝波');
+            if (value.includes('绿')) suggestions.push('绿波');
+            
+            // 这里可以添加更复杂的智能提示功能
+        });
+    </script>
+</body>
+</html>
